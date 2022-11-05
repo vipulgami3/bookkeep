@@ -1,0 +1,27 @@
+{% load static %}
+<header class="p-3 text-bg-dark">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-white text-decoration-none">
+          <img src="{% static 'images/logoBook.png' %}" class="bi me-2" width="45" height="45"></img>
+          <span class="fs-4">Library Books System</span>
+        </a>
+
+
+        <form method="post" action="{% url 'search' %}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+          {% csrf_token %}
+          <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" name="search-btn">
+        </form>
+
+        <div class="text-end">
+          {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-outline-light me-2">Logout</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Login</a>
+            <a href="{% url 'register_user' %}" class="btn btn-warning">Register</a>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </header>
