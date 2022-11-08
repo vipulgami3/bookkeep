@@ -1,0 +1,137 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+  </head>
+  <body>
+    {% include 'BMS/header.html' %}
+    <div class="container">
+        <div class="row">
+          {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+              {{message}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+    <div class="container">
+      <div class="row mb-2 mt-3">
+        {% if user.is_authenticated %}
+        {% if acess_perm.add_user %}
+        <a href="{% url 'add_user' %}" class="btn btn-primary col-5 col-lg-2 col-md-3"><i class="bi bi-file-earmark-plus"></i> Add New User</a>
+        <p class="col-2 col-lg-8 col-md-6"></p>
+
+        <div class="dropdown col-5 col-lg-2 col-md-3">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Select User
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'all_user' %}">Active User</a></li>
+              <li><a class="dropdown-item" href="{% url 'all_deactive_user' %}">Deactive User</a></li>
+              <li><a class="dropdown-item" href="{% url 'all_superuser' %}">SuperUser</a></li>
+            </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+    </div>
+    <div class="container">
+      <div class="row">
+        {% if user.is_authenticated %}
+          {% if acess_perm.view_user %}
+            <div class="table-responsive">
+                <table class="table table-striped table-sm align-middle">
+                  <thead>
+                    <tr>
+                      <th scope="col">User ID</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">First Name</th>
+                      <th scope="col">Last Name</th>
+                      <th scope="col">Email Id</th>
+                      <th scope="col">is_Active</th>
+                      <th scope="col">Groups</th>
+                      {% if user.is_authenticated %}
+                      {% if acess_perm.change_user %}
+                      <th scope="col">Edit</th>
+                      {% endif %}
+                      {% if acess_perm.delete_user %}
+                        {% if all_user %}
+                        <th scope="col">Deactive User</th>
+                        {% endif %}
+                        {% if all_deactive_user %}
+                        <th scope="col">Active User</th>
+                        {% endif %}
+                      {% endif %}
+                      {% endif %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for d in alluser %}
+                    <tr>
+                      <td>{{d.id}}</td>
+                      <td>{{d.username}}</td>
+                      <td>{{d.first_name}}</td>
+                      <td>{{d.last_name}}</td>
+                      <td>{{d.email}}</td>
+                      {% if d.is_active %}
+                      <td>Activated</td>
+                      {% else %}
+                      <td>Deactivated</td>
+                      {% endif %}
+                      {% for ug in d.groups.all %}
+                          <td>{{ ug }}</td>
+                      {% empty %}
+                          <td>NA</td>
+                      {% endfor %}
+                      {% if user.is_authenticated %}
+                      {% if acess_perm.change_user %}
+                      <td>
+                      <a href="/edit_user/{{d.id}}" class="btn"><i class="bi bi-pen-fill"></i></a>
+                      </td>
+                      {% endif %}
+                      {% if acess_perm.delete_user %}
+                        {% if all_user %}
+                          <td>
+                          <a href="/deactivated_user/{{d.id}}" class="btn"><i class="bi bi-person-dash-fill"></i></a>
+                          </td>
+                        {% endif %}
+                        {% if all_deactive_user %}
+                          <td>
+                          <a href="/activated_user/{{d.id}}" class="btn"><i class="bi bi-person-plus-fill"></i></a>
+                          </td>
+                        {% endif %}
+                      {% endif %}
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      {% else %}
+      <div class="px-4 py-5 my-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{% static 'images/logoBook.png' %}" alt="" width="72" height="72">
+        <h1 class="display-5 fw-bold text-danger">Access Denied!</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4">You must have Permission to access this function. <br>Send Request to Access Function </p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="#" class="btn btn-primary btn-lg px-4 gap-3">Request Permission</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+  </body>
+</html>

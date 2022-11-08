@@ -16,67 +16,71 @@
   <body>
     {% include 'BMS/header.html' %}
     {% if user.is_authenticated %}
-    {% if add_permission %}
-    <div class="container">
-        <div class="row">
-            <div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-12 mt-3">
-                <div class="card mt-xl-11 mt-lg-11 mt-12 mb-xl-3 mb-lg-3 mb-2 shadow">
-                    <div class="card-body p-6">
-                        <div class="mb-4">
-                            <h2 class="mb-3 text-center">Add New Book</h2>
-                            <p class="mb-1 font-22 text-center">"The love of books is a love which requires neither justification, apology, nor defense."</p>
-                        </div>
-                        <form method="post">
-                          {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="bookname" class="form-label">Book Name</label>
-                                <input type="text" class="form-control" name="bookname" id="bookname">
-                            </div>
-                            <div class="mb-3">
-                                <label for="author" class="form-label">Author Name</label>
-                                <input type="text" class="form-control" name="author" id="author">
-                            </div>
-                            <div class="mb-3">
-                                <label for="price" class="form-label">Book Price</label>
-                                <input type="number" class="form-control" name="price" id="price">
-                            </div>
-                            <div class="mb-3">
-                                <label for="pages" class="form-label">Book Pages</label>
-                                <input type="number" class="form-control" name="pages" id="pages">
-                            </div>
-                            <div class="mb-3">
-                              <label for="pages" class="form-label">Type Of Book</label>
-                              <select class="form-select  mb-3" name="tbook">
-                                  <option selected>__</option>
-                                  <option value="Non-Fiction">Non-Fiction</option>
-                                  <option value="Edited">Edited</option>
-                                  <option value="Reference">Reference</option>
-                                  <option value="Fiction">Fiction</option>
-                              </select>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary ">
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% else %}
-    <div class="px-4 py-5 my-5 text-center">
-      <img class="d-block mx-auto mb-4" src="{% static 'images/logoBook.png' %}" alt="" width="72" height="72">
-      <h1 class="display-5 fw-bold text-danger">Access Denied!</h1>
-      <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">You must have Permission to access this function. <br>Send Request to Access Function </p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-          <a href="#" class="btn btn-primary btn-lg px-4 gap-3">Request Permission</a>
+      {% if acess_perm.add_permission %}
+      <div class="container">
+          <div class="row">
+              <div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-12 mt-3">
+                  <div class="card mt-xl-11 mt-lg-11 mt-12 mb-xl-3 mb-lg-3 mb-2 shadow">
+                      <div class="card-body p-6">
+                          <div class="mb-4">
+                              <h2 class="mb-3 text-center">Add New Book</h2>
+                              <p class="mb-1 font-22 text-center">"The love of books is a love which requires neither justification, apology, nor defense."</p>
+                          </div>
+                          <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                              <div class="mb-3">
+                                  <label for="bookname" class="form-label">Book Name</label>
+                                  <input type="text" class="form-control" name="bookname" id="bookname">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="author" class="form-label">Author Name</label>
+                                  <input type="text" class="form-control" name="author" id="author">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="price" class="form-label">Book Price</label>
+                                  <input type="number" class="form-control" name="price" id="price">
+                              </div>
+                              <div class="mb-3">
+                                  <label for="pages" class="form-label">Book Pages</label>
+                                  <input type="number" class="form-control" name="pages" id="pages">
+                              </div>
+                              <div class="mb-3">
+                                <label for="pages" class="form-label">Type Of Book</label>
+                                <select class="form-select  mb-3" name="tbook">
+                                    <option selected>__</option>
+                                    <option value="Non-Fiction">Non-Fiction</option>
+                                    <option value="Edited">Edited</option>
+                                    <option value="Reference">Reference</option>
+                                    <option value="Fiction">Fiction</option>
+                                </select>
+                              </div>
+                              <div class="mb-3">
+                                <label for="images" class="form-label">Upload Image</label>
+                                <input class="form-control" type="file" id="images" name='images'>
+                              </div>
+                              <div class="d-grid">
+                                  <button type="submit" class="btn btn-primary ">
+                                      Submit
+                                  </button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      {% else %}
+      <div class="px-4 py-5 my-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{% static 'images/logoBook.png' %}" alt="" width="72" height="72">
+        <h1 class="display-5 fw-bold text-danger">Access Denied!</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4">You must have Permission to access this function.</p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="/" class="btn btn-primary btn-lg px-4 gap-3">Back to Home</a>
+          </div>
         </div>
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
     {% else %}
     <div class="px-4 py-5 my-5 text-center">
       <img class="d-block mx-auto mb-4" src="{% static 'images/logoBook.png' %}" alt="" width="72" height="72">

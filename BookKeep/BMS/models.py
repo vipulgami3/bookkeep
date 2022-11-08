@@ -14,6 +14,7 @@ class BookKeep(models.Model):
     price = models.FloatField()
     pages = models.IntegerField()
     tbook = models.CharField(max_length = 100, choices=your_choices)
+    images = models.ImageField(null=True,upload_to='images/')
     is_deleted = models.CharField(max_length = 2, default = 'n')
 
     #customObjects = models.Manager()
