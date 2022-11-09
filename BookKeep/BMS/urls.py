@@ -14,4 +14,9 @@ urlpatterns = [
     path('deactivated_user/<int:uid>', views.deactivated_user, name='deactivated_user'),
     path('edit_user/<int:uid>', views.edit_user, name='edit_user'),
     path('activated_user/<int:uid>', views.activated_user, name='activated_user'),
+    path('saved_book/', views.saved_book, name='saved_book'),
+    path('saving_book/<int:uid>', views.saving_book, name='saving_book'),
+    path('remove_book/<int:uid>', views.remove_book, name='remove_book'),
+    path('user_profile/<int:uid>', views.user_profile, name='user_profile'),
+    path('edit_by_user/<int:uid>', views.edit_by_user, name='edit_by_user'),
 ]

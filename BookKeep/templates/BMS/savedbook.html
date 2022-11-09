@@ -12,11 +12,22 @@
     {% include 'BMS/header.html' %}
 
     <div class="container">
+        <div class="row">
+          {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+              {{message}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+    <div class="container">
       <div class="row mb-2 mt-3">
         <a href="/" class="btn btn-primary col-4 col-lg-2 col-md-3 mx-2" data-bs-toggle="modal" data-bs-target="#filter"><i class="bi bi-menu-button"></i> Filter</a>
-        <a href="/" class="btn btn-primary col-4 col-lg-2 col-md-3" >Clear Filter</a>
+        <a href="{% url 'saved_book' %}" class="btn btn-primary col-4 col-lg-2 col-md-3" >Clear Filter</a>
       </div>
-    </div>
     <div class="container">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -26,7 +37,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Apply Filter</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form method="post" action="{% url 'filter' %}">
+              <form method="post" action="{% url 'saved_book' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                   <div class="mb-3">
@@ -70,56 +81,77 @@
         </div>
       </div>
     </div>
-    <div class="container">
-      <div class="row">
-          <div class="table-responsive">
-              <table class="table table-striped table-sm align-middle text-center">
-                <thead>
-                  <tr>
-                    <th scope="col">Book Image</th>
-                    <th scope="col">Book Name</th>
-                    <th scope="col">Author Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Pages</th>
-                    <th scope="col">Type Of Book</th>
-                    {% if user.is_authenticated %}
-                    {% if acess_perm.update_permission %}
-                    <th scope="col">Edit</th>
-                    {% endif %}
-                    {% if acess_perm %}
-                    <th scope="col">Delete</th>
-                    {% endif %}
-                    {% endif %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for d in allData %}
-                  <tr>
-                    <td><img src="{{d.images.url}}" alt="" style="width:4.5rem;"></td>
-                    <td>{{d.book}}</td>
-                    <td>{{d.author}}</td>
-                    <td>{{d.price}}</td>
-                    <td>{{d.pages}}</td>
-                    <td>{{d.tbook}}</td>
-                    {% if user.is_authenticated %}
-                    {% if acess_perm.update_permission %}
-                    <td>
-                    <a href="/edit/{{d.id}}" class="btn"><i class="bi bi-pen-fill"></i></a>
-                    </td>
-                    {% endif %}
-                    {% if acess_perm.delete_permission %}
-                    <td>
-                    <a href="/delete/{{d.id}}" class="btn"><i class="bi bi-trash-fill"></i></a>
-                    </td>
-                    {% endif %}
-                    {% endif %}
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+  <div class="container">
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-striped table-sm align-middle text-center">
+              <thead>
+                <tr>
+                  <th scope="col">Book Image</th>
+                  <th scope="col">Book Name</th>
+                  <th scope="col">Author Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Pages</th>
+                  <th scope="col">Type Of Book</th>
+                  {% if user.is_authenticated %}
+                  <th scope="col">Remove Favourite</th>
+                  {% if acess_perm.update_permission %}
+                  <th scope="col">Edit</th>
+                  {% endif %}
+                  {% if acess_perm.delete_permission %}
+                  <th scope="col">Delete</th>
+                  {% endif %}
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for d in AddedBook %}
+                <tr>
+                  <td><img src="{{d.images.url}}" alt="" style="width:4.5rem;"></td>
+                  <td>{{d.book}}</td>
+                  <td>{{d.author}}</td>
+                  <td>{{d.price}}</td>
+                  <td>{{d.pages}}</td>
+                  <td>{{d.tbook}}</td>
+                  {% if user.is_authenticated %}
+                  <td>
+                  <a href="/remove_book/{{d.id}}" class="btn"><i class="bi bi-file-earmark-minus"></i></a>
+                  </td>
+                  {% if acess_perm.update_permission %}
+                  <td>
+                  <a href="/edit/{{d.id}}" class="btn"><i class="bi bi-pen-fill"></i></a>
+                  </td>
+                  {% endif %}
+                  {% if acess_perm.delete_permission %}
+                  <td>
+                  <a href="/delete/{{d.id}}" class="btn"><i class="bi bi-trash-fill"></i></a>
+                  </td>
+                  {% endif %}
+
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
       </div>
     </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if pageno.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">&laquo First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{pageno.previous_page_number}}">Previous</a></li>
+        {% endif %}
+        {% for i in nums %}
+        <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+        {% endfor %}
+        {% if pageno.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{pageno.next_page_number}}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{pageno.paginator.num_pages}}">Last &raquo</a></li>
+        {% endif %}
+        </ul>
+      </nav>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
   </body>

@@ -29,6 +29,12 @@ def index(request):
     contain['pageno'] = p.get_page(page)
     contain['nums'] = 'a' * contain['pageno'].paginator.num_pages
     contain['acess_perm'] = permissions(request)
+    booklist_user = []
+    userbooks = BookKeep.myObjects.filter(user__id=request.user.id)
+    for userbook in userbooks :
+        booklist_user.append(userbook.book)
+    contain['AddedBook'] = booklist_user
+    contain['auser'] = request.user.username
     return render(request, 'BMS/index.html', contain)
 
 def search(request):
@@ -245,3 +251,96 @@ def edit_user(request, uid):
             return render(request, 'BMS/updateUser.html',contain)
     else:
         return render(request, 'BMS/updateUser.html')
+
+
+def saved_book(request):
+    if request.user.is_authenticated:
+        contain = {}
+        if (request.method == 'POST' and 'filter-btn' in request.POST):
+            price_filter = request.POST['price']
+            page_filter = request.POST['pages']
+            tbook_filter = request.POST['tbook']
+            author_filter = request.POST['author']
+            contain['pub'] = BookKeep.myObjects.duplicate_tbook()
+            tbook_check=[]
+            for dp in contain['pub']:
+                for n in dp:
+                    tbook_check.append(n)
+            if (tbook_filter in tbook_check and price_filter == 'htol'):
+                contain['AddedBook'] = BookKeep.myObjects.desc_by_price_pub(tbook_filter).filter(user__id=request.user.id)
+            elif (tbook_filter in tbook_check and price_filter == 'ltoh'):
+                contain['AddedBook'] = BookKeep.myObjects.asc_by_price_pub(tbook_filter).filter(user__id=request.user.id)
+            elif (tbook_filter in tbook_check and page_filter == 'htol'):
+                contain['AddedBook'] = BookKeep.myObjects.desc_by_pages_pub(tbook_filter).filter(user__id=request.user.id)
+            elif (tbook_filter in tbook_check and page_filter == 'ltoh'):
+                contain['AddedBook'] = BookKeep.myObjects.asc_by_pages_pub(tbook_filter).filter(user__id=request.user.id)
+            elif (price_filter == 'htol'):
+                contain['AddedBook'] = BookKeep.myObjects.desc_by_price().filter(user__id=request.user.id)
+            elif (price_filter == 'ltoh'):
+                contain['AddedBook'] = BookKeep.myObjects.asc_by_price().filter(user__id=request.user.id)
+            elif (author_filter == 'htol'):
+                contain['AddedBook'] = BookKeep.myObjects.desc_by_author().filter(user__id=request.user.id)
+            elif (author_filter == 'ltoh'):
+                contain['AddedBook'] = BookKeep.myObjects.asc_by_author().filter(user__id=request.user.id)
+            elif (page_filter == 'htol'):
+                contain['AddedBook'] = BookKeep.myObjects.desc_by_pages().filter(user__id=request.user.id)
+            elif (page_filter == 'ltoh'):
+                contain['AddedBook'] = BookKeep.myObjects.asc_by_pages().filter(user__id=request.user.id)
+            elif (tbook_filter in tbook_check):
+                contain['AddedBook'] = BookKeep.myObjects.tbook_name(tbook_filter).filter(user__id=request.user.id)
+            else:
+                return redirect('saved_book')
+            return render(request, 'BMS/savedbook.html', contain)
+
+        else:
+            contain['AddedBook'] = BookKeep.myObjects.filter(user__id=request.user.id)
+            return render(request, 'BMS/savedbook.html', contain)
+    else:
+        return redirect('/')
+
+def saving_book(request, uid):
+    if request.user.is_authenticated:
+        saving_book = BookKeep.myObjects.get(id = uid)
+        saving_book.user.add(request.user.id)
+        messages.success(request, f'{saving_book} Book Added Successfull')
+        return redirect('/')
+    else:
+        return redirect('/')
+
+def remove_book(request, uid):
+    if request.user.is_authenticated:
+        remove_book = BookKeep.myObjects.get(id = uid)
+        remove_book.user.clear()
+        messages.success(request, f'{remove_book} Book Removed Successfull')
+        return redirect('saved_book')
+    else:
+        return redirect('/')
+
+def user_profile(request, uid):
+    if request.user.is_authenticated:
+        contain = {}
+        contain['user'] = User.objects.get(id = uid)
+        return render(request, 'BMS/userprofile.html', contain)
+    else:
+        return render(request, 'BMS/userprofile.html')
+
+def edit_by_user(request, uid):
+    if request.user.is_authenticated:
+        if uid == request.user.id:
+            if (request.method == 'POST'):
+                username = request.POST['username']
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+                email = request.POST['email']
+                update_user = User.objects.filter(id = uid)
+                update_user.update(username=username, first_name=first_name, last_name=last_name, email=email)
+                messages.success(request, 'Profile Updated')
+                return redirect('user_profile',uid)
+            else:
+                contain = {}
+                contain['editbyuser'] = User.objects.get(id = uid)
+                return render(request, 'BMS/editbyuser.html', contain)
+        else:
+            return render(request, 'BMS/editbyuser.html')
+    else:
+        return redirect('/')

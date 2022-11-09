@@ -15,65 +15,39 @@
   </head>
   <body>
     {% include 'BMS/header.html' %}
-    <div class="container">
-        <div class="row">
-          {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-              {{message}}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endfor %}
-          {% endif %}
-        </div>
-    </div>
     {% if user.is_authenticated %}
-      {% if acess_perm.change_user %}
+      {% if user.id == request.user.id %}
       <div class="container">
           <div class="row">
               <div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-12 mt-3">
                   <div class="card mt-xl-12 mt-lg-12 mt-12 mb-xl-3 mb-lg-3 mb-2 shadow">
                       <div class="card-body p-6">
                           <div class="mb-4">
-                              <h2 class="mb-3 text-center">Update User</h2>
+                              <h2 class="mb-3 text-center">Edit Profile</h2>
                               </div>
                           <form method="POST">
                             {% csrf_token %}
-                            {% for d in edit_user %}
                               <div class="mb-3">
                                   <label for="username" class="form-label">Username</label>
-                                  <input type="text" class="form-control" value="{{d.username}}" name="username" id="username">
+                                  <input type="text" class="form-control" value="{{user.username}}" name="username" id="username">
                               </div>
                               <div class="mb-3">
                                   <label for="first_namefirst_name" class="form-label">First Name</label>
-                                  <input type="text" class="form-control" value="{{d.first_name}}" name="first_name" id="first_name">
+                                  <input type="text" class="form-control" value="{{user.first_name}}" name="first_name" id="first_name">
                               </div>
                               <div class="mb-3">
                                   <label for="last_name" class="form-label">Last Name</label>
-                                  <input type="text" class="form-control" value="{{d.last_name}}" name="last_name" id="last_name">
+                                  <input type="text" class="form-control" value="{{user.last_name}}" name="last_name" id="last_name">
                               </div>
                               <div class="mb-3">
                                   <label for="email" class="form-label">Email-ID</label>
-                                  <input type="email" class="form-control" value="{{d.email}}" name="email" id="email">
-                              </div>
-                              <div class="mb-3 form-check">
-                                {% if d.is_active %}
-                                  <input type='hidden' value="False" name="is_active">
-                                  <input class="form-check-input" type="checkbox" value="True" id="flexCheckChecked" name="is_active" checked>
-                                {% else %}
-                                  <input type='hidden' value="False" name="is_active">
-                                  <input class="form-check-input" type="checkbox" value="True" name="is_active" id="flexCheckChecked">
-                                {% endif %}
-                                  <label class="form-check-label" for="flexCheckChecked">
-                                    Active User
-                                  </label>
+                                  <input type="email" class="form-control" value="{{user.email}}" name="email" id="email">
                               </div>
                               <div class="d-grid">
                                   <button type="submit" class="btn btn-primary ">
                                       Update User
                                   </button>
                               </div>
-                            {% endfor %}
                           </form>
                       </div>
                   </div>
@@ -85,7 +59,7 @@
         <img class="d-block mx-auto mb-4" src="{% static 'images/logoBook.png' %}" alt="" width="72" height="72">
         <h1 class="display-5 fw-bold text-danger">Access Denied!</h1>
         <div class="col-lg-6 mx-auto">
-          <p class="lead mb-4">You must have Permission to access this function.</p>
+          <p class="lead mb-4">Return Back to Home</p>
           <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <a href="/" class="btn btn-primary btn-lg px-4 gap-3">Back to Home</a>
           </div>

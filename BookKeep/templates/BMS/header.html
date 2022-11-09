@@ -4,7 +4,7 @@
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 text-white text-decoration-none">
           <img src="{% static 'images/logoBook.png' %}" class="bi me-2" width="45" height="45"></img>
-          <span class="fs-4">Library Books System</span>
+          <span class="fs-4">Library Books</span>
         </a>
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           {% if user.is_authenticated %}
@@ -25,8 +25,8 @@
                 <i class="bi bi-person"></i> {{user}}
               </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><a class="dropdown-item" href="#">Saved Book</a></li>
+                <li><a class="dropdown-item" href='/user_profile/{{user.id}}'>Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'saved_book' %}">Saved Book</a></li>
                 {% if user.is_superuser %}
                 <li><a href="{% url 'all_user' %}" class="dropdown-item">Active-User</a></li>
                 {% endif %}

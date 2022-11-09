@@ -26,8 +26,8 @@
     <div class="container">
       <div class="row mb-2 mt-3">
         <a href="/" class="btn btn-primary col-4 col-lg-2 col-md-3 mx-2" data-bs-toggle="modal" data-bs-target="#filter"><i class="bi bi-menu-button"></i> Filter</a>
-      
       </div>
+    </div>
     <div class="container">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -84,7 +84,7 @@
   <div class="container">
     <div class="row">
         <div class="table-responsive">
-            <table class="table table-striped table-sm align-middle">
+            <table class="table table-striped table-sm align-middle text-center">
               <thead>
                 <tr>
                   <th scope="col">Book Image</th>
@@ -94,6 +94,7 @@
                   <th scope="col">Pages</th>
                   <th scope="col">Type Of Book</th>
                   {% if user.is_authenticated %}
+                  <th scope="col">Add to Favourite</th>
                   {% if acess_perm.update_permission %}
                   <th scope="col">Edit</th>
                   {% endif %}
@@ -113,6 +114,13 @@
                   <td>{{d.pages}}</td>
                   <td>{{d.tbook}}</td>
                   {% if user.is_authenticated %}
+                  <td>
+                    {% if d.book in AddedBook %}
+                      <i class="bi bi-check2 btn"></i>
+                    {% else %}
+                      <a href="saving_book/{{d.id}}" class="btn"><i class="bi bi-file-earmark-plus"></i></a>
+                    {% endif %}
+                  </td>
                   {% if acess_perm.update_permission %}
                   <td>
                   <a href="/edit/{{d.id}}" class="btn"><i class="bi bi-pen-fill"></i></a>
