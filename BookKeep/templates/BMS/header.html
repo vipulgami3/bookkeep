@@ -29,6 +29,7 @@
                 <li><a class="dropdown-item" href="{% url 'saved_book' %}">Saved Book</a></li>
                 {% if user.is_superuser %}
                 <li><a href="{% url 'all_user' %}" class="dropdown-item">Active-User</a></li>
+                <li><a href="{% url 'permission' %}" class="dropdown-item">Permission</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>

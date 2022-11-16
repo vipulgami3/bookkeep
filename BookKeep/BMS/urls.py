@@ -19,4 +19,6 @@ urlpatterns = [
     path('remove_book/<int:uid>', views.remove_book, name='remove_book'),
     path('user_profile/<int:uid>', views.user_profile, name='user_profile'),
     path('edit_by_user/<int:uid>', views.edit_by_user, name='edit_by_user'),
+    path('permission/', views.permission, name='permission'),
+    path('updatepermission/', views.updatepermission, name='updatepermission'),
 ]

@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from BMS.models import BookKeep
 from django.db.models import Q, Max, Min, Avg, Sum, Count
 from django.contrib import messages
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User, Group, Permission, AnonymousUser
 from django.core.paginator import Paginator
+from django.db.models.manager import EmptyManager
 from members.forms import RegisterUser
 # Create your views here.
 
@@ -342,5 +343,67 @@ def edit_by_user(request, uid):
                 return render(request, 'BMS/editbyuser.html', contain)
         else:
             return render(request, 'BMS/editbyuser.html')
+    else:
+        return redirect('/')
+
+def permission(request):
+    if request.user.is_authenticated:
+        contain = {}
+        contain['alluserperm'] = User.objects.filter(is_superuser=False).filter(is_active=True)
+        return render(request, 'BMS/permission.html', contain)
+    else:
+        return redirect('/')
+
+def updatepermission(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            add_list = request.POST.getlist('perm')
+            update_list = request.POST.getlist('perm1')
+            delete_list = request.POST.getlist('perm2')
+            add_id_list = ([int(x) for x in add_list])
+            update_id_list = ([int(x) for x in update_list])
+            delete_id_list = ([int(x) for x in delete_list])
+            all_active_user = User.objects.filter(is_superuser=False).filter(is_active=True)
+            for q in all_active_user:
+                addid = q.id
+                if addid in add_id_list:
+                    print('add')
+                    c = User.objects.filter(id = addid)
+                    for i in c:
+                        i.user_permissions.add(25)
+                else:
+                    print("else1")
+                    c = User.objects.filter(id = addid)
+                    for i in c:
+                        i.user_permissions.remove(25)
+            for p in all_active_user:
+                updateid = p.id
+                if updateid in update_id_list:
+                    print('update')
+                    c = User.objects.filter(id = updateid)
+                    for i in c:
+                        i.user_permissions.add(26)
+                else:
+                    print("else2")
+                    c = User.objects.filter(id = updateid)
+                    for i in c:
+                        i.user_permissions.remove(26)
+            for r in all_active_user:
+                deleteid = r.id
+                if deleteid in delete_id_list:
+                    print('delete')
+                    c = User.objects.filter(id = deleteid)
+                    for i in c:
+                        i.user_permissions.add(27)
+                else:
+                    print("else3")
+                    c = User.objects.filter(id = deleteid)
+                    for i in c:
+                        i.user_permissions.remove(27)
+            return redirect('permission')
+        else:
+            contain = {}
+            contain['alluserperm'] = User.objects.filter(is_superuser=False).filter(is_active=True)
+            return render(request, 'BMS/updatepermission.html', contain)
     else:
         return redirect('/')
